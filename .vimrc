@@ -40,6 +40,9 @@ call plug#begin('~/.vim/pluggins')
 
 Plug 'morhetz/gruvbox'
 Plug 'arcticicestudio/nord-vim'
+Plug 'everard/vim-aurora'
+Plug 'agude/vim-eldar'
+Plug 'jonathanfilip/vim-lucius'
 
 " IDE
 
@@ -136,7 +139,7 @@ let g:indentLine_fileTypeExclude = ['json']
 let g:indentLine_char_list = ['|', '¦', '┆', '┊']
 let g:indentLine_leadingSpaceEnabled = 1
 let g:indentLine_leadingSpaceChar = '.'
-let g:indentLine_setColors = 0
+"let g:indentLine_setColors = 0
 
 " webdevicons conf
 let g:webdevicons_enable_nerdtree = 1
@@ -163,13 +166,20 @@ let g:NERDTreeHighlightCursorline = 0
 " nord
 "colorscheme nord
 
+" vim-aurora
+"colorscheme aurora
+
+" vim lucius
+colorscheme lucius
+LuciusLight
+
 " gruvbox
-colorscheme gruvbox
-
-set background=dark
-
-let g:gruvbox_contrast_dark = "medium"
-let g:gruvbox_italic = 1
-let g:gruvbox_underline = 1
-let g:gruvbox_italicize_comments = 1
-let g:gruvbox_termcolors = 256
+"colorscheme gruvbox
+"
+"set background=dark
+"
+"let g:gruvbox_contrast_dark = "medium"
+"let g:gruvbox_italic = 1
+"let g:gruvbox_underline = 1
+"let g:gruvbox_italicize_comments = 1
+"let g:gruvbox_termcolors = 256
