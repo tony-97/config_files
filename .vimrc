@@ -26,7 +26,21 @@ set nowritebackup
 set lazyredraw
 set noshowmode
 
+" TextEdit might fail if hidden is not set.
+set hidden
+
+" Don't pass messages to |ins-completion-menu|.
+set shortmess+=c
+
+" map leader to comma
+let mapleader = ","
+
 " Vim conf by file type
+
+" Verilog HDL
+au BufNewFile,BufRead *.v			setf v
+au BufNewFile,BufRead *.vv			setf v
+au BufNewFile,BufRead *.vsh			setf v
 
 " html,phtml indent with 2
 autocmd Filetype html setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
@@ -49,15 +63,17 @@ Plug 'jonathanfilip/vim-lucius'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ryanoasis/vim-devicons'
 Plug 'itchyny/lightline.vim'
-Plug 'cohama/lexima.vim'
-Plug 'alvan/vim-closetag'
 Plug 'scrooloose/nerdtree'
 Plug 'turbio/bracey.vim'
 Plug 'Yggdroot/indentLine'
-Plug 'ryanoasis/vim-devicons'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plug 'honza/vim-snippets'
+Plug 'cohama/lexima.vim'
 
 " Syntax Highlighting
+
+" V
+Plug 'cheap-glitch/vim-v'
 
 " Vala
 Plug 'arrufat/vala.vim'
@@ -70,11 +86,85 @@ call plug#end()
 " coc-nvim
 let g:coc_filetype_map = { "php": "html", "phtml": "html" }
 
-" closetag conf
-let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.php'
+" Always show the signcolumn, otherwise it would shift the text each time
+" diagnostics appear/become resolved.
+if has("nvim-0.5.0") || has("patch-8.1.1564")
+  " Recently vim can merge signcolumn and number column into one
+  set signcolumn=number
+else
+  set signcolumn=yes
+endif
 
-" lexima conf
-let g:lexima_enable_basic_rules = 1
+" Use <c-space> to trigger completion.
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if CocAction('hasProvider', 'hover')
+    call CocActionAsync('doHover')
+  else
+    call feedkeys('K', 'in')
+  endif
+endfunction
+
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+
+" Formatting selected code.
+xmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
+
+augroup mygroup
+  autocmd!
+  " Setup formatexpr specified filetype(s).
+  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  " Update signature help on jump placeholder.
+  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end
+
+" Remap <C-f> and <C-b> for scroll float windows/popups.
+if has('nvim-0.4.0') || has('patch-8.2.0750')
+  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+endif
+
+set statusline^=%{coc#status()}
+
+" Use <C-l> for trigger snippet expand.
+imap <C-l> <Plug>(coc-snippets-expand)
+
+" Use <C-j> for select text for visual placeholder of snippet.
+vmap <C-j> <Plug>(coc-snippets-select)
+
+" Use <C-j> for jump to next placeholder, it's default of coc.nvim
+let g:coc_snippet_next = '<c-j>'
+
+" Use <C-k> for jump to previous placeholder, it's default of coc.nvim
+let g:coc_snippet_prev = '<c-k>'
 
 " lightline
 let g:lightline = {
@@ -93,21 +183,6 @@ let g:lightline = {
 " Use autocmd to force lightline update.
 autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
 
-" coc conf
-set statusline^=%{coc#status()}
-imap <C-l> <Plug>(coc-snippets-expand)
-vmap <C-j> <Plug>(coc-snippets-select)
-
-" Remap <C-f> and <C-b> for scroll float windows/popups.
-if has('nvim-0.4.0') || has('patch-8.2.0750')
-  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-endif
-
 " vim-airline conf
 "let g:airline_theme='angr'
 "let g:airline#extensions#tabline#enabled = 1
@@ -115,6 +190,7 @@ endif
 
 " nerdtree conf
 nmap <Space>f :NERDTreeFind<CR>
+nmap <Space>F :tabdo NERDTreeClose<CR>
 
 let NERDTreeShowHidden=1
 let NERDTreeWinPos='right'
@@ -171,7 +247,7 @@ let g:NERDTreeHighlightCursorline = 0
 
 " vim lucius
 colorscheme lucius
-LuciusLight
+LuciusDark
 
 " gruvbox
 "colorscheme gruvbox
