@@ -16,6 +16,7 @@ exfatprogs \
 e2fsprogs \
 nilfs-utils \
 f2fs-tools \
+ntfs-3g \
 nano \
 amd-ucode \
 intel-ucode \
@@ -83,7 +84,10 @@ mesa-vdpau \
 libva-vdpau-driver \
 libvdpau-va-gl \
 polkit \
-ntfs-3g \
+gvfs \
+gvfs-mtp \
+gvfs-gphoto2 \
+gvfs-afc \
 xarchiver \
 tumbler \
 poppler-glib \
