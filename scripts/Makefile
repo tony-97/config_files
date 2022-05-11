@@ -13,8 +13,10 @@ CC	 ?= gcc
 # C++ compiler
 CXX ?= g++
 
+LD ?= g++
+
 # All warning flags
-WFLAGS := -W -Wall -Wextra -Wpedantic -pedantic
+WFLAGS := -W -Wall -Wextra -Wpedantic -pedantic -Wpedantic-errors
 
 # Pre processor flags
 CPPFLAGS +=
@@ -44,7 +46,7 @@ RM := rm -fR
 # $(2) : Source to compile C/C++
 # $(3) : Include file .h/.hpp
 # $(4) : Compiler
-# $(5) : Compiler processor flags
+# $(5) : Compiler preprocessor flags
 # $(6) : Compiler flags
 define COMPILE_ONLY
 $(1) : $(2) $(3)
@@ -60,21 +62,23 @@ $(patsubst $(SRC_DIR)%,$(OBJ_DIR)%,$(1))
 endef
 
 #==============================================================================
-# Replace .c .cc .cxx .cpp extension to .o
-# and same as SOURCE_PATH_2_OBJ
+# Replace source file with his respective include file
 #==============================================================================
-# $(1) : Sources files
+# $(1) : Full source filename
 define SOURCES_2_INCLUDE
 $(subst .c,.h,$(subst .cc,.hh,$(subst .cxx,.hxx,$(subst .cpp,.hpp,$(1)))))
 endef
 
 #==============================================================================
-# Replace $(SRC_DIR) path to $(OBJ_DIR)
+# Replaces srcs extension with .c.o .cpp.o 
 #==============================================================================
-# $(1) : Sources files
-define SOURCES_2_OBJS
+# $(1) : Full source filename
+define CXXSOURCES_2_OBJS
 $(call SOURCE_PATH_2_OBJ,\
-$(subst .c,.o,$(subst .cc,.o,$(subst .cxx,.o,$(subst .cpp,.o,$(1))))))
+$(subst .cc,.cc.o,$(subst .cxx,.cc.o,$(subst .cpp,.cc.o,$(1)))))
+endef
+define CSOURCES_2_OBJS
+$(call SOURCE_PATH_2_OBJ,$(subst .c,.c.o,$(1)))
 endef
 
 #==============================================================================
@@ -109,9 +113,10 @@ SRCS_CXX := $(call FIND_SOURCES,$(SRC_DIR),"*.cpp") \
 SRCS_C := $(call FIND_SOURCES,$(SRC_DIR),"*.c")
 
 # Sources converted to object file
-OBJS := $(call SOURCES_2_OBJS,$(SRCS_CXX) $(SRCS_C))
+OBJS_CXX := $(call CXXSOURCES_2_OBJS,$(SRCS_CXX) $(SRCS_C))
+OBJS_C   := $(call CSOURCES_2_OBJS,$(SRCS_CXX) $(SRCS_C))
 
-# Source directories
+# Sources directorie tree
 SRCS_DIRS := $(shell find $(SRC_DIR)/ -type d)
 
 # Objects directories same structure as src/ dir
@@ -119,21 +124,21 @@ OBJS_DIRS := $(call SOURCE_PATH_2_OBJ,$(SRCS_DIRS))
 
 .PHONY: clean cleanall
 
-$(BUILD_PATH)/$(EXEC_NAME): $(OBJS_DIRS) $(OBJS)
-	$(CXX) -o $@ $(OBJS) $(LDFLAGS) $(LDLIBS)
+$(BUILD_PATH)/$(EXEC_NAME): $(OBJS_DIRS) $(OBJS_CXX) $(OBJS_C)
+	$(LD) -o $@ $(OBJS_CXX) $(OBJS_C) $(LDFLAGS) $(LDLIBS)
 
-$(BUILD_PATH)/$(LIB_NAME): $(OBJS_DIRS) $(OBJS)
-	$(AR) $(ARFLAGS) $@ $(OBJS) 
+$(BUILD_PATH)/$(LIB_NAME): $(OBJS_DIRS) $(OBJS_CXX) $(OBJS_C)
+	$(AR) $(ARFLAGS) $@ $(OBJS)
 	$(RANLIB) $@
 
 $(foreach CXX_FILE,$(SRCS_CXX),\
 $(eval \
-$(call COMPILE_ONLY,$(call SOURCES_2_OBJS,$(CXX_FILE)),\
+$(call COMPILE_ONLY,$(call CXXSOURCES_2_OBJS,$(CXX_FILE)),\
 $(CXX_FILE),$(call SOURCES_2_INCLUDE,$(CXX_FILE)),$(CXX),$(CPPFLAGS),$(CXXFLAGS))))
 
 $(foreach C_FILE,$(SRCS_C),\
 $(eval \
-$(call COMPILE_ONLY,$(call SOURCES_2_OBJS,$(C_FILE)),\
+$(call COMPILE_ONLY,$(call CSOURCES_2_OBJS,$(C_FILE)),\
 $(C_FILE),$(call SOURCES_2_INCLUDE,$(C_FILE)),$(CC),$(CPPFLAGS),$(CFLAGS))))
 
 $(OBJS_DIRS):
