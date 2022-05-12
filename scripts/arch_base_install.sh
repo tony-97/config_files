@@ -71,7 +71,7 @@ ttf-cascadia-code \
 cantarell-fonts \
 ttf-junicode \
 noto-fonts-emoji \
-ttf-joypixel \
+ttf-joypixels \
 v4l-utils \
 libinput \
 xorg-xinput \
@@ -98,6 +98,14 @@ gnome-epub-thumbnailer \
 lightdm \
 lightdm-gtk-greeter \
 lightdm-gtk-greeter-settings \
+lxappearance-gtk3 \
+papirus-icon-theme \
+hicolor-icon-theme \
+adwaita-icon-theme \
+gnome-icon-theme-extras \
+gnome-themes-extra \
+gtk-engine-murrine \
+libnotify \
 
 # set the keyboard
 loadkeys la-latin1
