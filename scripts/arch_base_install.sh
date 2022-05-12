@@ -106,6 +106,7 @@ gnome-icon-theme-extras \
 gnome-themes-extra \
 gtk-engine-murrine \
 libnotify \
+xfce4-notifyd \
 
 # set the keyboard
 loadkeys la-latin1
