@@ -3,11 +3,11 @@
 #$2 is swap partition
 #$3 is the user name
 
-PACKAGES=\
-base \
+BASE=base \
 base-devel \
 linux \
 linux-firmware \
+bash-completion
 networkmanager \
 network-manager-applet \
 modemmanager \
@@ -18,37 +18,34 @@ nilfs-utils \
 f2fs-tools \
 ntfs-3g \
 nano \
-amd-ucode \
-intel-ucode \
 grub \
-bash-completion
 doas \
-xf86-input-libinput \
-xf86-input-evdev \
 xorg-server \
-xorg-drivers \
-mesa \
-xf86-video-amdgpu \
-xf86-video-ati \
-xf86-video-amdgpu \
-xf86-video-intel1 \
-xf86-video-nouveauxf86-video-amdgpu \
-xf86-video-ati \
-xf86-video-amdgpu \
-xf86-video-intel1 \
-xf86-video-nouveau \
 arandr \
 udisks2 \
 udiskie \
 xdg-users-dirs \
-alsa-firmware \
-sof-firmware \
-alsa-ucm-conf \
 p7zip \
 unrar \
 zip \
 unzip \
-ttf-liberation \
+v4l-utils \
+libinput \
+xorg-xinput \
+polkit \
+gvfs \
+gvfs-mtp \
+gvfs-gphoto2 \
+gvfs-afc \
+xarchiver \
+tumbler \
+poppler-glib \
+ffmpegthumbnailer \
+freetype2 \
+libgsf \
+gnome-epub-thumbnailer \
+
+FONTS=ttf-liberation \
 dina-font \
 xorg-fonts-alias-misc \
 xorg-fonts-alias-cyrillic \
@@ -72,9 +69,25 @@ cantarell-fonts \
 ttf-junicode \
 noto-fonts-emoji \
 ttf-joypixels \
-v4l-utils \
-libinput \
-xorg-xinput \
+
+HARDWARE=xf86-input-libinput \
+xf86-input-evdev \
+amd-ucode \
+intel-ucode \
+xorg-drivers \
+mesa \
+xf86-video-amdgpu \
+xf86-video-ati \
+xf86-video-amdgpu \
+xf86-video-intel1 \
+xf86-video-nouveauxf86-video-amdgpu \
+xf86-video-ati \
+xf86-video-amdgpu \
+xf86-video-intel1 \
+xf86-video-nouveau \
+alsa-firmware \
+sof-firmware \
+alsa-ucm-conf \
 gstreamer-vaapi \
 gst-plugins-bad \
 intel-media-driver \
@@ -83,19 +96,8 @@ libva-mesa-driver \
 mesa-vdpau \
 libva-vdpau-driver \
 libvdpau-va-gl \
-polkit \
-gvfs \
-gvfs-mtp \
-gvfs-gphoto2 \
-gvfs-afc \
-xarchiver \
-tumbler \
-poppler-glib \
-ffmpegthumbnailer \
-freetype2 \
-libgsf \
-gnome-epub-thumbnailer \
-lightdm \
+
+APPEREANCE=lightdm \
 lightdm-gtk-greeter \
 lightdm-gtk-greeter-settings \
 lxappearance-gtk3 \
@@ -107,6 +109,10 @@ gnome-themes-extra \
 gtk-engine-murrine \
 libnotify \
 xfce4-notifyd \
+menumaker \
+archlinux-xdg-menu \
+
+PACKAGES=$BASE $HARDWARE $FONTS $APPEREANCE
 
 # set the keyboard
 loadkeys la-latin1
